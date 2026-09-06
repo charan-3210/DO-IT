@@ -3,128 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="A little romantic surprise made just for you.">
-<title>For You ❤️</title>
+<title>Our Little Universe ❤️</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Dancing+Script:wght@500;600;700&display=swap');
 
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-html{scroll-behavior:smooth}
+html{
+  scroll-behavior:smooth;
+}
 
 body{
-  background:#07030d;
-  color:#fff;
-  font-family:"Cormorant Garamond",serif;
+  min-height:100vh;
   overflow-x:hidden;
+  background:#02030d;
+  color:white;
+  font-family:"Cormorant Garamond",serif;
 }
 
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-3;
-  background:
-    radial-gradient(circle at 50% 20%,#53133f 0,transparent 35%),
-    radial-gradient(circle at 20% 80%,#241047 0,transparent 35%),
-    #07030d;
-}
+/* SPACE BACKGROUND */
 
-#scene{
+#space{
   position:fixed;
   inset:0;
   width:100%;
   height:100%;
-  z-index:-2;
-  pointer-events:none;
+  z-index:-5;
+  background:#02030d;
 }
 
-.particles{
+.space-glow{
+  position:fixed;
+  inset:-20%;
+  z-index:-4;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 20% 25%,
+      rgba(102,40,180,.30),
+      transparent 28%),
+    radial-gradient(circle at 80% 30%,
+      rgba(255,30,140,.18),
+      transparent 25%),
+    radial-gradient(circle at 50% 80%,
+      rgba(30,80,190,.20),
+      transparent 30%);
+  animation:nebula 12s ease-in-out infinite alternate;
+}
+
+@keyframes nebula{
+  from{transform:scale(1)}
+  to{transform:scale(1.08)}
+}
+
+.stars{
   position:fixed;
   inset:0;
-  z-index:-1;
+  z-index:-3;
   pointer-events:none;
-  overflow:hidden;
 }
 
-.particle{
+.star{
   position:absolute;
-  width:5px;
-  height:5px;
   border-radius:50%;
-  background:#ff8fc7;
-  box-shadow:0 0 12px #ff4fa3;
-  opacity:.7;
-  animation:float linear infinite;
+  background:white;
+  box-shadow:0 0 8px white;
+  animation:twinkle 2s ease-in-out infinite alternate;
 }
 
-@keyframes float{
-  from{transform:translateY(110vh) scale(.4);opacity:0}
-  15%{opacity:.8}
-  85%{opacity:.7}
-  to{transform:translateY(-10vh) scale(1);opacity:0}
+@keyframes twinkle{
+  from{opacity:.2}
+  to{opacity:1}
 }
 
-.skip{
-  position:fixed;
-  left:10px;
-  top:-100px;
-  z-index:100;
-  background:#ff3f96;
-  color:#fff;
-  padding:12px 18px;
-  border-radius:20px;
+/* COMMON */
+
+main{
+  position:relative;
 }
-.skip:focus{top:10px}
 
 section{
   min-height:100svh;
   min-height:100vh;
-  padding:70px 20px;
+  padding:60px 18px;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   text-align:center;
-  position:relative;
 }
 
 .container{
-  width:min(1000px,100%);
-  margin:auto;
+  width:min(900px,100%);
 }
 
 .kicker{
-  font-size:16px;
+  color:#ff91ca;
   letter-spacing:4px;
   text-transform:uppercase;
-  color:#ff91c8;
+  font-size:14px;
   margin-bottom:18px;
 }
 
 h1,h2{
   font-weight:600;
-  line-height:.95;
+  line-height:1;
   text-shadow:
-    0 0 15px rgba(255,72,158,.7),
-    0 0 50px rgba(255,72,158,.25);
+    0 0 15px rgba(255,60,160,.8),
+    0 0 45px rgba(130,70,255,.35);
 }
 
 h1{
-  font-size:clamp(65px,14vw,145px);
+  font-size:clamp(65px,14vw,140px);
 }
 
 h2{
-  font-size:clamp(48px,9vw,90px);
+  font-size:clamp(42px,9vw,85px);
 }
 
 .subtitle{
-  font-size:clamp(19px,3vw,27px);
-  opacity:.85;
-  margin:25px auto 35px;
   max-width:650px;
+  margin:25px auto 35px;
+  font-size:clamp(18px,3vw,25px);
+  opacity:.85;
+  line-height:1.5;
 }
 
 .script{
@@ -134,30 +141,46 @@ h2{
 
 .btn{
   border:1px solid rgba(255,255,255,.3);
-  color:#fff;
-  background:linear-gradient(135deg,#ff3f91,#a54cff);
-  padding:17px 34px;
   border-radius:50px;
+  padding:15px 30px;
+  color:white;
   font-family:inherit;
   font-size:19px;
+  font-weight:600;
   cursor:pointer;
+  background:linear-gradient(135deg,#ff3e94,#8b4dff);
   box-shadow:
-    0 0 20px rgba(255,53,148,.4),
-    0 12px 40px rgba(0,0,0,.35);
-  transition:.25s ease;
+    0 0 25px rgba(255,50,150,.35),
+    0 12px 35px rgba(0,0,0,.4);
+  transition:.25s;
   touch-action:manipulation;
 }
 
 .btn:hover{
   transform:translateY(-4px) scale(1.03);
   box-shadow:
-    0 0 35px rgba(255,53,148,.7),
-    0 15px 45px rgba(0,0,0,.4);
+    0 0 40px rgba(255,50,150,.7),
+    0 15px 45px rgba(0,0,0,.5);
 }
 
 .btn:focus-visible{
-  outline:3px solid #fff;
+  outline:3px solid white;
   outline-offset:5px;
+}
+
+/* HERO */
+
+.hero-heart{
+  font-size:80px;
+  margin-bottom:15px;
+  filter:drop-shadow(0 0 25px #ff3e98);
+  animation:heartbeat 1.7s infinite;
+}
+
+@keyframes heartbeat{
+  50%{
+    transform:scale(1.12);
+  }
 }
 
 .scroll{
@@ -165,186 +188,204 @@ h2{
   bottom:25px;
   left:50%;
   transform:translateX(-50%);
-  font-size:14px;
-  letter-spacing:3px;
   opacity:.55;
+  font-size:13px;
+  letter-spacing:3px;
 }
 
-.scroll span{
-  display:block;
-  margin-top:8px;
-  animation:down 1.5s infinite;
-}
+/* TASK AREA */
 
-@keyframes down{
-  50%{transform:translateY(8px)}
-}
-
-/* QUESTION */
-
-.question-box{
-  width:min(750px,100%);
-  padding:55px 25px;
-  border-radius:35px;
-  border:1px solid rgba(255,150,205,.25);
-  background:rgba(25,7,29,.55);
+.task-box{
+  width:min(760px,100%);
+  padding:45px 22px;
+  border-radius:32px;
+  background:rgba(7,7,28,.72);
+  border:1px solid rgba(255,130,200,.28);
   box-shadow:
-    0 0 80px rgba(255,37,140,.12),
-    inset 0 0 50px rgba(255,255,255,.025);
-  backdrop-filter:blur(14px);
+    0 0 70px rgba(100,40,200,.18),
+    inset 0 0 50px rgba(255,60,160,.04);
+  backdrop-filter:blur(12px);
 }
 
-.heart-symbol{
-  font-size:65px;
-  margin-bottom:20px;
-  animation:heartbeat 1.5s infinite;
-  filter:drop-shadow(0 0 18px #ff3f96);
-}
-
-@keyframes heartbeat{
-  50%{transform:scale(1.12)}
-}
-
-.answers{
-  display:flex;
-  justify-content:center;
-  gap:18px;
-  flex-wrap:wrap;
-  margin-top:35px;
-}
-
-.no{
+.progress{
+  width:100%;
+  height:7px;
+  border-radius:10px;
   background:rgba(255,255,255,.1);
+  margin:25px 0 30px;
+  overflow:hidden;
 }
 
-#answer{
-  min-height:30px;
+.progress-bar{
+  height:100%;
+  width:0%;
+  border-radius:10px;
+  background:linear-gradient(90deg,#ff3f98,#a855ff);
+  box-shadow:0 0 15px #ff3f98;
+  transition:.4s;
+}
+
+.task-number{
+  color:#ff91c8;
+  font-size:18px;
+  margin-bottom:15px;
+}
+
+.task-question{
+  font-size:clamp(30px,6vw,48px);
+  margin-bottom:30px;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.option{
+  padding:17px 15px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.07);
+  color:white;
+  font-family:inherit;
+  font-size:18px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.option:hover{
+  background:rgba(255,70,160,.18);
+  transform:translateY(-2px);
+}
+
+.option:focus-visible{
+  outline:3px solid white;
+  outline-offset:4px;
+}
+
+#taskMessage{
+  min-height:35px;
   margin-top:25px;
-  color:#ff9ccc;
   font-family:"Dancing Script",cursive;
-  font-size:28px;
+  color:#ff9ccc;
+  font-size:27px;
+}
+
+/* RETRY LOOP */
+
+.retry{
+  animation:shake .35s;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-8px)}
+  75%{transform:translateX(8px)}
+}
+
+.loop-message{
+  color:#ff719f;
 }
 
 /* MEMORIES */
 
-.memory-section{
-  align-items:flex-start;
-  padding-top:100px;
-}
-
 .memory-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:24px;
-  margin:50px auto 40px;
+  gap:20px;
+  margin:45px 0;
 }
 
-.card{
-  min-height:300px;
+.memory{
+  min-height:250px;
   padding:25px;
   border-radius:28px;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
   text-align:left;
-  position:relative;
-  overflow:hidden;
-  border:1px solid rgba(255,160,210,.3);
   background:
-    radial-gradient(circle at 70% 25%,rgba(255,88,169,.5),transparent 30%),
-    linear-gradient(145deg,#33133b,#10091d);
-  box-shadow:0 20px 50px rgba(0,0,0,.35);
-  transition:.35s ease;
+    radial-gradient(circle at 70% 20%,rgba(255,70,160,.35),transparent 35%),
+    linear-gradient(145deg,#21133d,#08081b);
+  border:1px solid rgba(255,150,210,.25);
+  box-shadow:0 20px 45px rgba(0,0,0,.35);
+  transition:.3s;
 }
 
-.card:nth-child(2){
-  background:
-    radial-gradient(circle at 30% 20%,rgba(164,82,255,.5),transparent 35%),
-    linear-gradient(145deg,#251343,#0d0819);
+.memory:hover{
+  transform:translateY(-8px);
 }
 
-.card:nth-child(3){
-  background:
-    radial-gradient(circle at 70% 30%,rgba(255,132,95,.4),transparent 35%),
-    linear-gradient(145deg,#3c1737,#100817);
+.memory-icon{
+  font-size:58px;
+  margin-bottom:auto;
+  color:#ff8fc7;
+  filter:drop-shadow(0 0 15px #ff3f98);
 }
 
-.card:hover{
-  transform:translateY(-10px) rotateX(3deg);
-}
-
-.card-icon{
-  position:absolute;
-  top:22px;
-  right:25px;
-  font-size:55px;
-  color:#ff86be;
-  filter:drop-shadow(0 0 15px #ff3f96);
-}
-
-.card h3{
-  font-size:31px;
+.memory h3{
+  font-size:30px;
   margin-bottom:8px;
 }
 
-.card p{
+.memory p{
   font-size:18px;
-  opacity:.72;
+  opacity:.7;
 }
 
 /* LETTER */
 
 .letter{
   width:min(760px,100%);
-  padding:50px 35px;
-  border-radius:35px;
-  border:1px solid rgba(255,150,205,.3);
-  background:rgba(22,7,28,.65);
-  box-shadow:
-    0 30px 80px rgba(0,0,0,.45),
-    inset 0 0 60px rgba(255,50,150,.04);
-  backdrop-filter:blur(15px);
-}
-
-.letter-line{
-  width:100px;
-  height:1px;
-  background:#ff78b6;
-  margin:20px auto 30px;
-  box-shadow:0 0 15px #ff3f96;
+  padding:45px 28px;
+  border-radius:32px;
+  background:rgba(8,7,27,.75);
+  border:1px solid rgba(255,150,210,.25);
+  box-shadow:0 25px 70px rgba(0,0,0,.5);
+  backdrop-filter:blur(13px);
 }
 
 .letter p{
-  font-size:21px;
+  font-size:20px;
   line-height:1.7;
+  margin:15px 0;
   opacity:.9;
-  margin-bottom:18px;
+}
+
+.line{
+  width:100px;
+  height:1px;
+  margin:20px auto;
+  background:#ff70b2;
+  box-shadow:0 0 15px #ff3f98;
 }
 
 .signature{
   font-family:"Dancing Script",cursive;
-  font-size:34px!important;
   color:#ff9ccc;
-  margin-top:25px;
+  font-size:32px!important;
 }
 
 /* FINAL */
 
 .final-heart{
-  font-size:100px;
-  filter:drop-shadow(0 0 35px #ff3f96);
-  animation:pulse 2s infinite;
+  font-size:120px;
+  filter:drop-shadow(0 0 35px #ff3f98);
+  animation:finalPulse 2s infinite;
 }
 
-@keyframes pulse{
-  50%{transform:scale(1.08)}
+@keyframes finalPulse{
+  50%{
+    transform:scale(1.08);
+  }
 }
 
-.footer-text{
+.footer{
   margin-top:35px;
+  opacity:.45;
   letter-spacing:4px;
   font-size:13px;
-  opacity:.45;
 }
 
 /* MOBILE */
@@ -352,43 +393,43 @@ h2{
 @media(max-width:700px){
 
   section{
-    padding:55px 16px;
+    padding:45px 14px;
   }
 
-  .question-box{
-    padding:40px 18px;
-    border-radius:25px;
+  .task-box{
+    padding:35px 15px;
     backdrop-filter:none;
-    background:rgba(25,7,29,.88);
+    background:rgba(7,7,28,.9);
+  }
+
+  .options{
+    grid-template-columns:1fr;
+  }
+
+  .option{
+    padding:15px;
   }
 
   .memory-grid{
     grid-template-columns:1fr;
-    gap:16px;
-    margin-top:35px;
   }
 
-  .card{
-    min-height:230px;
+  .memory{
+    min-height:210px;
   }
 
   .letter{
-    padding:35px 20px;
+    padding:35px 19px;
     backdrop-filter:none;
-    background:rgba(22,7,28,.9);
-  }
-
-  .letter p{
-    font-size:19px;
-  }
-
-  .btn{
-    padding:15px 27px;
+    background:rgba(8,7,27,.92);
   }
 }
 
 @media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
+
+  html{
+    scroll-behavior:auto;
+  }
 
   *,
   *::before,
@@ -402,253 +443,257 @@ h2{
 
 <body>
 
-<a class="skip" href="#main">Skip to content</a>
+<canvas id="space" aria-hidden="true"></canvas>
 
-<canvas id="scene" aria-hidden="true"></canvas>
-<div class="particles" id="particles" aria-hidden="true"></div>
+<div class="space-glow" aria-hidden="true"></div>
+<div class="stars" id="stars" aria-hidden="true"></div>
 
 <main id="main" tabindex="-1">
 
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 
-<section id="home" aria-labelledby="homeTitle">
+<section id="home">
 
-  <div class="container">
+<div class="container">
 
-    <div class="kicker">A little surprise for you</div>
+<div class="hero-heart" aria-hidden="true">♥</div>
 
-    <h1 id="homeTitle">
-      Hey You <span class="script">♥</span>
-    </h1>
+<div class="kicker">
+A little universe for you
+</div>
 
-    <p class="subtitle">
-      I made a tiny world just for you.
-      <br>
-      <span class="script">Take a moment and come inside...</span>
-    </p>
+<h1>
+Hey You <span class="script">♥</span>
+</h1>
 
-    <button class="btn" id="enterBtn">
-      Enter My World →
-    </button>
+<p class="subtitle">
+Welcome to our little universe.
+<br>
+<span class="script">
+There are 30 little challenges waiting for you...
+</span>
+</p>
 
-  </div>
+<button class="btn" id="startBtn">
+Enter My Universe →
+</button>
 
-  <div class="scroll">
-    JUST SCROLL
-    <span>↓</span>
-  </div>
+</div>
 
-</section>
-
-
-<!-- QUESTION -->
-
-<section id="question" aria-labelledby="questionTitle">
-
-  <div class="question-box">
-
-    <div class="heart-symbol" aria-hidden="true">♥</div>
-
-    <div class="kicker">Be honest...</div>
-
-    <h2 id="questionTitle">
-      Do you like me?
-    </h2>
-
-    <p class="subtitle">
-      Your answer might change this little story.
-    </p>
-
-    <div class="answers">
-
-      <button class="btn" id="yesBtn">
-        YES ♥
-      </button>
-
-      <button class="btn no" id="noBtn">
-        NO 😶
-      </button>
-
-    </div>
-
-    <p id="answer"
-       role="status"
-       aria-live="polite"
-       aria-atomic="true"></p>
-
-  </div>
+<div class="scroll">
+SCROLL
+</div>
 
 </section>
 
 
-<!-- MEMORIES -->
+<!-- ================= TASKS ================= -->
 
-<section id="memories"
-         class="memory-section"
-         aria-labelledby="memoryTitle">
+<section id="tasks">
 
-  <div class="container">
+<div class="task-box">
 
-    <div class="kicker">Maybe someday...</div>
+<div class="kicker">
+Our Little Challenge
+</div>
 
-    <h2 id="memoryTitle">
-      Our Little Story
-    </h2>
+<div class="task-number" id="taskNumber">
+Task 1 of 30
+</div>
 
-    <p class="subtitle">
-      Some moments are already special.
-      <br>
-      And some are still waiting to happen.
-    </p>
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
 
-    <div class="memory-grid">
+<div class="task-question" id="question">
+Loading...
+</div>
 
-      <article class="card">
+<div class="options" id="options"></div>
 
-        <div class="card-icon" aria-hidden="true">
-          ♡
-        </div>
+<div id="taskMessage"
+     role="status"
+     aria-live="polite">
+</div>
 
-        <h3>Late Night Talks</h3>
-
-        <p>
-          Conversations that never feel boring.
-        </p>
-
-      </article>
-
-
-      <article class="card">
-
-        <div class="card-icon" aria-hidden="true">
-          ✦
-        </div>
-
-        <h3>Small Moments</h3>
-
-        <p>
-          Little things that somehow mean a lot.
-        </p>
-
-      </article>
-
-
-      <article class="card">
-
-        <div class="card-icon" aria-hidden="true">
-          ∞
-        </div>
-
-        <h3>A Beautiful Future</h3>
-
-        <p>
-          So many moments still waiting for us.
-        </p>
-
-      </article>
-
-    </div>
-
-    <button class="btn" id="letterBtn">
-      One Last Thing →
-    </button>
-
-  </div>
+</div>
 
 </section>
 
 
-<!-- LETTER -->
+<!-- ================= MEMORIES ================= -->
 
-<section id="letter" aria-labelledby="letterTitle">
+<section id="memories">
 
-  <div class="letter">
+<div class="container">
 
-    <div class="kicker">
-      This one's for you
-    </div>
+<div class="kicker">
+You made it
+</div>
 
-    <h2 id="letterTitle">
-      For You ♥
-    </h2>
+<h2>
+Our Little Story
+</h2>
 
-    <div class="letter-line"></div>
+<p class="subtitle">
+Thirty little steps brought you here.
+<br>
+Now let's look at what might come next.
+</p>
 
-    <p>
-      I don't know where this little journey will take us,
-      but I just wanted you to know something...
-    </p>
+<div class="memory-grid">
 
-    <p>
-      You are special.
-      You bring happiness in ways you might not even realize.
-    </p>
+<article class="memory">
 
-    <p>
-      Some people enter our lives unexpectedly
-      and somehow make everything feel a little brighter.
-    </p>
+<div class="memory-icon"
+     aria-hidden="true">
+🌙
+</div>
 
-    <p>
-      Thank you for being you.
-    </p>
+<h3>
+Late Nights
+</h3>
 
-    <p>
-      Maybe this is just the beginning of something beautiful.
-    </p>
+<p>
+Talking until we forget what time it is.
+</p>
 
-    <p class="signature">
-      I'm really happy you're here ♥
-    </p>
+</article>
 
-    <button class="btn" id="finalBtn">
-      Continue →
-    </button>
 
-  </div>
+<article class="memory">
+
+<div class="memory-icon"
+     aria-hidden="true">
+🌌
+</div>
+
+<h3>
+Our Universe
+</h3>
+
+<p>
+Two people, one tiny universe of memories.
+</p>
+
+</article>
+
+
+<article class="memory">
+
+<div class="memory-icon"
+     aria-hidden="true">
+🌹
+</div>
+
+<h3>
+Beautiful Moments
+</h3>
+
+<p>
+The best moments may still be ahead.
+</p>
+
+</article>
+
+</div>
+
+<button class="btn" id="letterBtn">
+One Last Thing →
+</button>
+
+</div>
 
 </section>
 
 
-<!-- FINAL -->
+<!-- ================= LETTER ================= -->
 
-<section id="final" aria-labelledby="finalTitle">
+<section id="letter">
 
-  <div class="container">
+<div class="letter">
 
-    <div class="final-heart" aria-hidden="true">
-      ♥
-    </div>
+<div class="kicker">
+Just for you
+</div>
 
-    <div class="kicker">
-      And finally...
-    </div>
+<h2>
+For You ♥
+</h2>
 
-    <h2 id="finalTitle">
-      You Are Amazing
-    </h2>
+<div class="line"></div>
 
-    <p class="subtitle">
-      Whatever happens next,
-      <br>
-      I'm glad this little story brought you here.
-    </p>
+<p>
+I wanted to create something different.
+Not just a page, but a small universe
+you could explore.
+</p>
 
-    <p class="script" style="font-size:32px">
-      Maybe our best chapter hasn't been written yet.
-    </p>
+<p>
+Every question was a tiny step,
+and every correct answer brought you
+closer to the end.
+</p>
 
-    <br><br>
+<p>
+Maybe the real story isn't inside this website.
+Maybe it's what happens after you close it.
+</p>
 
-    <button class="btn" id="replayBtn">
-      ↻ Replay This Moment
-    </button>
+<p class="signature">
+I'm glad you stayed until the end ♥
+</p>
 
-    <div class="footer-text">
-      MADE WITH ♥ JUST FOR YOU
-    </div>
+<button class="btn" id="finishBtn">
+Continue →
+</button>
 
-  </div>
+</div>
+
+</section>
+
+
+<!-- ================= FINAL ================= -->
+
+<section id="final">
+
+<div class="container">
+
+<div class="final-heart"
+     aria-hidden="true">
+♥
+</div>
+
+<div class="kicker">
+You reached the end
+</div>
+
+<h2>
+You Are Amazing
+</h2>
+
+<p class="subtitle">
+Thirty challenges.
+One little universe.
+And one special person.
+</p>
+
+<p class="script"
+   style="font-size:32px">
+Maybe this is only the beginning...
+</p>
+
+<br><br>
+
+<button class="btn" id="replayBtn">
+↻ Start Again
+</button>
+
+<div class="footer">
+MADE WITH ♥ IN OUR LITTLE UNIVERSE
+</div>
+
+</div>
 
 </section>
 
@@ -658,262 +703,265 @@ h2{
 <script>
 
 /* ==========================================
-   PERFORMANCE
+   SPACE STARS
 ========================================== */
 
-const mobile =
-  matchMedia("(max-width:700px)").matches ||
-  matchMedia("(pointer:coarse)").matches;
+const starsBox=
+document.getElementById("stars");
 
-const reduced =
-  matchMedia("(prefers-reduced-motion:reduce)").matches;
+const mobile=
+matchMedia("(max-width:700px)").matches ||
+matchMedia("(pointer:coarse)").matches;
 
+const reduced=
+matchMedia("(prefers-reduced-motion:reduce)").matches;
 
-/* ==========================================
-   FLOATING PARTICLES
-========================================== */
+const starCount=
+reduced ? 35 :
+mobile ? 70 :
+130;
 
-const particleBox =
-  document.getElementById("particles");
+for(let i=0;i<starCount;i++){
 
-const particleCount =
-  reduced ? 15 :
-  mobile ? 28 :
-  55;
+  const star=
+  document.createElement("div");
 
-for(let i=0;i<particleCount;i++){
-
-  const p=document.createElement("div");
-
-  p.className="particle";
-
-  p.style.left=Math.random()*100+"%";
-
-  p.style.animationDuration=
-    (7+Math.random()*10)+"s";
-
-  p.style.animationDelay=
-    (-Math.random()*15)+"s";
-
-  p.style.opacity=
-    .25+Math.random()*.55;
+  star.className="star";
 
   const size=
-    2+Math.random()*4;
+  Math.random()*3+1;
 
-  p.style.width=size+"px";
-  p.style.height=size+"px";
+  star.style.width=size+"px";
+  star.style.height=size+"px";
 
-  particleBox.appendChild(p);
+  star.style.left=
+  Math.random()*100+"%";
+
+  star.style.top=
+  Math.random()*100+"%";
+
+  star.style.animationDelay=
+  Math.random()*3+"s";
+
+  star.style.animationDuration=
+  1.5+Math.random()*3+"s";
+
+  starsBox.appendChild(star);
 }
 
 
 /* ==========================================
-   THREE.JS
+   THREE.JS SPACE
 ========================================== */
 
 const canvas=
-  document.getElementById("scene");
+document.getElementById("space");
 
 const scene=
-  new THREE.Scene();
+new THREE.Scene();
 
 const camera=
-  new THREE.PerspectiveCamera(
-    55,
-    innerWidth/innerHeight,
-    .1,
-    100
-  );
+new THREE.PerspectiveCamera(
+55,
+innerWidth/innerHeight,
+.1,
+100
+);
 
 camera.position.z=7;
 
-
 const renderer=
-  new THREE.WebGLRenderer({
-    canvas,
-    alpha:true,
-    antialias:!mobile,
-    powerPreference:mobile
-      ?"low-power"
-      :"default"
-  });
+new THREE.WebGLRenderer({
+  canvas,
+  alpha:true,
+  antialias:!mobile,
+  powerPreference:mobile?
+  "low-power":"default"
+});
 
 renderer.setPixelRatio(
-  Math.min(
-    devicePixelRatio || 1,
-    mobile ? 1.25 : 1.7
-  )
-);
+Math.min(
+devicePixelRatio||1,
+mobile?1.2:1.7
+));
 
 renderer.setSize(
-  innerWidth,
-  innerHeight,
-  false
+innerWidth,
+innerHeight,
+false
 );
 
 
-/* LIGHTS */
+/* LIGHT */
 
 scene.add(
-  new THREE.AmbientLight(
-    0xffd6e8,
-    mobile ? 1.3 : .9
-  )
+new THREE.AmbientLight(
+0xffd5eb,
+mobile?1.3:.9
+));
+
+const pinkLight=
+new THREE.PointLight(
+0xff3f98,
+4,
+25
 );
 
-const light=
-  new THREE.PointLight(
-    0xff3f96,
-    4,
-    25
-  );
+pinkLight.position.set(
+2,3,5
+);
 
-light.position.set(2,3,5);
-
-scene.add(light);
+scene.add(pinkLight);
 
 if(!mobile){
 
-  const light2=
-    new THREE.PointLight(
-      0x8f4dff,
-      2.5,
-      25
-    );
+  const purpleLight=
+  new THREE.PointLight(
+    0x774cff,
+    3,
+    25
+  );
 
-  light2.position.set(-4,-2,3);
+  purpleLight.position.set(
+    -4,-2,4
+  );
 
-  scene.add(light2);
+  scene.add(purpleLight);
 }
 
 
-/* HEART */
+/* ==========================================
+   3D HEART
+========================================== */
 
-const shape=
-  new THREE.Shape();
+const heartShape=
+new THREE.Shape();
 
-shape.moveTo(0,.5);
+heartShape.moveTo(0,.5);
 
-shape.bezierCurveTo(
-  0,.5,
-  -1.5,1.5,
-  -1.8,.15
+heartShape.bezierCurveTo(
+0,.5,
+-1.5,1.5,
+-1.8,.1
 );
 
-shape.bezierCurveTo(
-  -2,-1,
-  -.7,-1.7,
-  0,-.65
+heartShape.bezierCurveTo(
+-2,-1,
+-.7,-1.7,
+0,-.65
 );
 
-shape.bezierCurveTo(
-  .7,-1.7,
-  2,-1,
-  1.8,.15
+heartShape.bezierCurveTo(
+.7,-1.7,
+2,-1,
+1.8,.1
 );
 
-shape.bezierCurveTo(
-  1.5,1.5,
-  0,.5,
-  0,.5
+heartShape.bezierCurveTo(
+1.5,1.5,
+0,.5,
+0,.5
 );
 
 const heartGeometry=
-  new THREE.ExtrudeGeometry(
-    shape,{
-      depth:.5,
-      bevelEnabled:true,
-      bevelSegments:mobile?1:3,
-      steps:1,
-      bevelSize:.1,
-      bevelThickness:.1
-    }
-  );
+new THREE.ExtrudeGeometry(
+heartShape,{
+  depth:.5,
+  bevelEnabled:true,
+  bevelSegments:mobile?1:3,
+  steps:1,
+  bevelSize:.1,
+  bevelThickness:.1
+});
 
 heartGeometry.center();
 
 const heartMaterial=
-  new THREE.MeshStandardMaterial({
-    color:0xff4f9d,
-    emissive:0x801744,
-    emissiveIntensity:.8,
-    roughness:.3,
-    metalness:.05
-  });
+new THREE.MeshStandardMaterial({
+  color:0xff4f9d,
+  emissive:0x801744,
+  emissiveIntensity:.8,
+  roughness:.3
+});
 
 const heart=
-  new THREE.Mesh(
-    heartGeometry,
-    heartMaterial
-  );
+new THREE.Mesh(
+heartGeometry,
+heartMaterial
+);
 
-heart.scale.set(1.15,1.15,1.15);
+heart.scale.set(
+1.15,1.15,1.15
+);
 
 scene.add(heart);
 
 
-/* PARTICLES IN 3D */
+/* ==========================================
+   3D STAR FIELD
+========================================== */
 
 const count=
-  reduced ? 80 :
-  mobile ? 280 :
-  650;
+reduced?80:
+mobile?280:
+650;
 
 const positions=
-  new Float32Array(count*3);
+new Float32Array(count*3);
 
 for(let i=0;i<count;i++){
 
   const n=i*3;
 
   positions[n]=
-    (Math.random()-.5)*28;
+  (Math.random()-.5)*30;
 
   positions[n+1]=
-    (Math.random()-.5)*28;
+  (Math.random()-.5)*30;
 
   positions[n+2]=
-    (Math.random()-.5)*25;
+  (Math.random()-.5)*25;
 }
 
-const geometry=
-  new THREE.BufferGeometry();
+const starGeometry=
+new THREE.BufferGeometry();
 
-geometry.setAttribute(
-  "position",
-  new THREE.BufferAttribute(
-    positions,3
-  )
+starGeometry.setAttribute(
+"position",
+new THREE.BufferAttribute(
+positions,3
+));
+
+const starMaterial=
+new THREE.PointsMaterial({
+  color:0xffffff,
+  size:mobile?.055:.04,
+  transparent:true,
+  opacity:.8
+});
+
+const spaceStars=
+new THREE.Points(
+starGeometry,
+starMaterial
 );
 
-const material=
-  new THREE.PointsMaterial({
-    color:0xffb9dc,
-    size:mobile?.055:.04,
-    transparent:true,
-    opacity:.7
-  });
-
-const stars=
-  new THREE.Points(
-    geometry,
-    material
-  );
-
-scene.add(stars);
+scene.add(spaceStars);
 
 
-/* ANIMATION */
+/* ==========================================
+   ANIMATION
+========================================== */
 
 let last=0;
 
 const fps=
-  reduced ? 12 :
-  mobile ? 30 :
-  60;
+reduced?12:
+mobile?30:
+60;
 
-const interval=1000/fps;
+const frameTime=
+1000/fps;
 
 function animate(time){
 
@@ -921,36 +969,356 @@ function animate(time){
 
   if(document.hidden)return;
 
-  if(time-last<interval)return;
+  if(time-last<frameTime)return;
 
   last=time;
 
   if(!reduced){
 
     heart.rotation.y=
-      time*.00045;
+    time*.00045;
 
     heart.rotation.z=
-      Math.sin(time*.0007)*.08;
+    Math.sin(time*.0007)*.08;
 
-    const s=
-      1.15+
-      Math.sin(time*.002)*.045;
+    const scale=
+    1.15+
+    Math.sin(time*.002)*.045;
 
-    heart.scale.set(s,s,s);
+    heart.scale.set(
+      scale,scale,scale
+    );
 
-    stars.rotation.y=
-      time*.000018;
+    spaceStars.rotation.y=
+    time*.00002;
 
-    stars.rotation.x=
-      time*.000008;
-
+    spaceStars.rotation.x=
+    time*.000008;
   }
 
-  renderer.render(scene,camera);
+  renderer.render(
+    scene,
+    camera
+  );
 }
 
 requestAnimationFrame(animate);
+
+
+/* ==========================================
+   30 TASKS
+========================================== */
+
+const tasks=[
+
+{
+ q:"What is more beautiful?",
+ a:["A smile","A smile","Money","Nothing"],
+ correct:1
+},
+
+{
+ q:"Where would you rather watch the stars?",
+ a:["On a rooftop","In a crowded mall","In an office","At a station"],
+ correct:0
+},
+
+{
+ q:"Which describes a perfect night?",
+ a:["Quiet and peaceful","Traffic","Noise","Arguments"],
+ correct:0
+},
+
+{
+ q:"What makes a memory special?",
+ a:["The people in it","The price","The location","Nothing"],
+ correct:0
+},
+
+{
+ q:"Which would you choose?",
+ a:["A long conversation","Ignoring each other","An argument","Silence forever"],
+ correct:0
+},
+
+{
+ q:"What shines brightest?",
+ a:["A kind heart","A street light","A phone","A building"],
+ correct:0
+},
+
+{
+ q:"What would make you smile?",
+ a:["A sweet surprise","Bad news","An argument","A broken phone"],
+ correct:0
+},
+
+{
+ q:"Which place feels magical?",
+ a:["Under the stars","A parking lot","A classroom","A traffic signal"],
+ correct:0
+},
+
+{
+ q:"What is better than a gift?",
+ a:["A meaningful moment","An empty box","A bill","Nothing"],
+ correct:0
+},
+
+{
+ q:"What should never be forgotten?",
+ a:["Good memories","Passwords","Arguments","Mistakes"],
+ correct:0
+},
+
+{
+ q:"Which is more important?",
+ a:["Trust","Expensive things","Popularity","Winning"],
+ correct:0
+},
+
+{
+ q:"What makes conversations special?",
+ a:["Being comfortable","Being angry","Being silent","Being distracted"],
+ correct:0
+},
+
+{
+ q:"What would you choose for a peaceful evening?",
+ a:["Stars and music","Traffic","Noise","Arguments"],
+ correct:0
+},
+
+{
+ q:"What is a beautiful surprise?",
+ a:["Something thoughtful","Something harmful","A problem","An argument"],
+ correct:0
+},
+
+{
+ q:"What makes someone unforgettable?",
+ a:["The memories they create","Their phone","Their clothes","Their money"],
+ correct:0
+},
+
+{
+ q:"What is stronger?",
+ a:["Kindness","Anger","Jealousy","Noise"],
+ correct:0
+},
+
+{
+ q:"Which moment would you keep forever?",
+ a:["A happy memory","A boring meeting","A traffic jam","An argument"],
+ correct:0
+},
+
+{
+ q:"What makes a friendship stronger?",
+ a:["Understanding","Ignoring","Lying","Fighting"],
+ correct:0
+},
+
+{
+ q:"What is more valuable?",
+ a:["Time together","An expensive object","A random number","Nothing"],
+ correct:0
+},
+
+{
+ q:"What should people give more often?",
+ a:["Kind words","Arguments","Stress","Problems"],
+ correct:0
+},
+
+{
+ q:"Which feels more romantic?",
+ a:["Watching the stars together","Watching traffic","Waiting in a queue","Doing nothing"],
+ correct:0
+},
+
+{
+ q:"What creates the best memories?",
+ a:["Small moments","Money","Arguments","Stress"],
+ correct:0
+},
+
+{
+ q:"What matters in a special relationship?",
+ a:["Respect","Competition","Secrets","Ignoring"],
+ correct:0
+},
+
+{
+ q:"What makes someone feel appreciated?",
+ a:["Being remembered","Being ignored","Being blamed","Being forgotten"],
+ correct:0
+},
+
+{
+ q:"What is worth protecting?",
+ a:["A good connection","An argument","A bad habit","Nothing"],
+ correct:0
+},
+
+{
+ q:"What would you choose?",
+ a:["A beautiful sunset","A stressful day","A traffic jam","A fight"],
+ correct:0
+},
+
+{
+ q:"What makes ordinary days special?",
+ a:["The right person","More problems","More noise","More stress"],
+ correct:0
+},
+
+{
+ q:"What should a beautiful story have?",
+ a:["Happy memories","Only arguments","Nothing","Endless problems"],
+ correct:0
+},
+
+{
+ q:"What is the best kind of surprise?",
+ a:["One made with thought","One that hurts","A problem","Nothing"],
+ correct:0
+},
+
+{
+ q:"After all these tasks, what matters most?",
+ a:["The person beside you","Winning","Money","The score"],
+ correct:0
+}
+
+];
+
+
+/* ==========================================
+   TASK ENGINE
+========================================== */
+
+let currentTask=0;
+let retryMode=false;
+
+const question=
+document.getElementById("question");
+
+const options=
+document.getElementById("options");
+
+const taskNumber=
+document.getElementById("taskNumber");
+
+const taskMessage=
+document.getElementById("taskMessage");
+
+const progressBar=
+document.getElementById("progressBar");
+
+const taskBox=
+document.querySelector(".task-box");
+
+
+function loadTask(){
+
+  const task=
+  tasks[currentTask];
+
+  retryMode=false;
+
+  taskNumber.textContent=
+  "Task "+
+  (currentTask+1)+
+  " of "+
+  tasks.length;
+
+  question.textContent=
+  task.q;
+
+  progressBar.style.width=
+  ((currentTask)/tasks.length*100)+"%";
+
+  taskMessage.textContent="";
+
+  options.innerHTML="";
+
+  task.a.forEach(
+  (text,index)=>{
+
+    const button=
+    document.createElement("button");
+
+    button.className="option";
+
+    button.textContent=text;
+
+    button.type="button";
+
+    button.addEventListener(
+      "click",
+      ()=>{
+        checkAnswer(index);
+      }
+    );
+
+    options.appendChild(button);
+
+  });
+}
+
+
+function checkAnswer(index){
+
+  const correct=
+  tasks[currentTask].correct;
+
+  if(index===correct){
+
+    taskMessage.textContent=
+    retryMode
+    ?"Correct! You escaped the loop ♥"
+    :"Correct! ♥";
+
+    taskBox.classList.remove("retry");
+
+    progressBar.style.width=
+    ((currentTask+1)/
+    tasks.length*100)+"%";
+
+    setTimeout(()=>{
+
+      currentTask++;
+
+      if(currentTask>=tasks.length){
+
+        go("memories");
+
+      }else{
+
+        loadTask();
+
+      }
+
+    },700);
+
+  }else{
+
+    retryMode=true;
+
+    taskMessage.textContent=
+    "Wrong answer... you're in the loop. Try again.";
+
+    taskMessage.className=
+    "loop-message";
+
+    taskBox.classList.remove("retry");
+
+    void taskBox.offsetWidth;
+
+    taskBox.classList.add("retry");
+  }
+}
 
 
 /* ==========================================
@@ -960,13 +1328,13 @@ requestAnimationFrame(animate);
 function go(id){
 
   const el=
-    document.getElementById(id);
+  document.getElementById(id);
 
   if(!el)return;
 
   el.scrollIntoView({
     behavior:
-      reduced?"auto":"smooth"
+    reduced?"auto":"smooth"
   });
 
   setTimeout(()=>{
@@ -978,155 +1346,122 @@ function go(id){
 
 
 /* ==========================================
-   YES / NO
+   BUTTONS
 ========================================== */
 
-const enter=
-  document.getElementById("enterBtn");
-
-const yes=
-  document.getElementById("yesBtn");
-
-const no=
-  document.getElementById("noBtn");
-
-const answer=
-  document.getElementById("answer");
-
-const letter=
-  document.getElementById("letterBtn");
-
-const finalBtn=
-  document.getElementById("finalBtn");
-
-const replay=
-  document.getElementById("replayBtn");
+document
+.getElementById("startBtn")
+.addEventListener(
+"click",
+()=>{
+  currentTask=0;
+  loadTask();
+  go("tasks");
+});
 
 
-enter.onclick=()=>{
-  go("question");
-};
-
-
-let noClicks=0;
-
-yes.onclick=()=>{
-
-  answer.textContent=
-    "I knew it... ♥";
-
-  setTimeout(()=>{
-    go("memories");
-  },1000);
-};
-
-
-no.onclick=()=>{
-
-  noClicks++;
-
-  const texts=[
-    "Are you sure? 🥺",
-    "Think again...",
-    "Really? 😭",
-    "Last chance ♥"
-  ];
-
-  if(noClicks<=texts.length){
-
-    no.textContent=
-      texts[noClicks-1];
-
-  }else{
-
-    no.textContent="YES ♥";
-
-    no.classList.remove("no");
-
-    no.onclick=()=>{
-
-      answer.textContent=
-        "I knew it... ♥";
-
-      setTimeout(()=>{
-        go("memories");
-      },1000);
-    };
-  }
-};
-
-
-letter.onclick=()=>{
+document
+.getElementById("letterBtn")
+.addEventListener(
+"click",
+()=>{
   go("letter");
-};
+});
 
 
-finalBtn.onclick=()=>{
+document
+.getElementById("finishBtn")
+.addEventListener(
+"click",
+()=>{
   go("final");
-};
+});
 
 
-replay.onclick=()=>{
+document
+.getElementById("replayBtn")
+.addEventListener(
+"click",
+()=>{
 
-  noClicks=0;
+  currentTask=0;
+  retryMode=false;
 
-  no.textContent="NO 😶";
-
-  no.classList.add("no");
-
-  no.onclick=null;
-
-  answer.textContent="";
+  loadTask();
 
   go("home");
-};
+
+});
 
 
-/* ESCAPE */
-
-document.addEventListener(
-  "keydown",
-  e=>{
-    if(e.key==="Escape"){
-      go("home");
-    }
-  }
-);
-
-
-/* RESIZE */
+/* ==========================================
+   RESIZE
+========================================== */
 
 let resizeTimer;
 
-addEventListener(
-  "resize",
-  ()=>{
-    clearTimeout(resizeTimer);
+window.addEventListener(
+"resize",
+()=>{
 
-    resizeTimer=setTimeout(()=>{
+  clearTimeout(resizeTimer);
 
-      camera.aspect=
-        innerWidth/innerHeight;
+  resizeTimer=
+  setTimeout(()=>{
 
-      camera.updateProjectionMatrix();
+    camera.aspect=
+    innerWidth/innerHeight;
 
-      renderer.setPixelRatio(
-        Math.min(
-          devicePixelRatio||1,
-          mobile?1.25:1.7
-        )
-      );
+    camera.updateProjectionMatrix();
 
-      renderer.setSize(
-        innerWidth,
-        innerHeight,
-        false
-      );
+    renderer.setPixelRatio(
+      Math.min(
+        devicePixelRatio||1,
+        mobile?1.2:1.7
+      )
+    );
 
-    },120);
-  },
-  {passive:true}
+    renderer.setSize(
+      innerWidth,
+      innerHeight,
+      false
+    );
+
+  },120);
+
+},
+{passive:true}
 );
+
+
+/* ==========================================
+   PAGE VISIBILITY
+========================================== */
+
+document.addEventListener(
+"visibilitychange",
+()=>{
+  /* Rendering automatically stops
+     while the page is hidden. */
+});
+
+
+/* ==========================================
+   ESCAPE
+========================================== */
+
+document.addEventListener(
+"keydown",
+e=>{
+  if(e.key==="Escape"){
+    go("home");
+  }
+});
+
+
+/* START */
+
+loadTask();
 
 </script>
 
