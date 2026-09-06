@@ -1,1030 +1,1134 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A little romantic surprise made just for you.">
+<title>For You ❤️</title>
 
-  <title>For You ❤️</title>
-  <meta name="description" content="A little interactive surprise made just for you.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@500;600;700&display=swap');
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+*{box-sizing:border-box;margin:0;padding:0}
 
-    html {
-      scroll-behavior: smooth;
-    }
+html{scroll-behavior:smooth}
 
-    body {
-      background: #080612;
-      color: white;
-      font-family: Arial, sans-serif;
-      overflow-x: hidden;
-    }
+body{
+  background:#07030d;
+  color:#fff;
+  font-family:"Cormorant Garamond",serif;
+  overflow-x:hidden;
+}
 
-    #bg {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
-    }
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  background:
+    radial-gradient(circle at 50% 20%,#53133f 0,transparent 35%),
+    radial-gradient(circle at 20% 80%,#241047 0,transparent 35%),
+    #07030d;
+}
 
-    .skip-link {
-      position: fixed;
-      top: -100px;
-      left: 10px;
-      z-index: 100;
-      padding: 12px 18px;
-      background: #ff4f9a;
-      color: white;
-      border-radius: 10px;
-      text-decoration: none;
-    }
+#scene{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:-2;
+  pointer-events:none;
+}
 
-    .skip-link:focus {
-      top: 10px;
-    }
+.particles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  overflow:hidden;
+}
 
-    main {
-      position: relative;
-      z-index: 1;
-    }
+.particle{
+  position:absolute;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#ff8fc7;
+  box-shadow:0 0 12px #ff4fa3;
+  opacity:.7;
+  animation:float linear infinite;
+}
 
-    .screen {
-      min-height: 100vh;
-      min-height: 100svh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 30px 20px;
-    }
+@keyframes float{
+  from{transform:translateY(110vh) scale(.4);opacity:0}
+  15%{opacity:.8}
+  85%{opacity:.7}
+  to{transform:translateY(-10vh) scale(1);opacity:0}
+}
 
-    .content {
-      width: min(900px, 100%);
-    }
+.skip{
+  position:fixed;
+  left:10px;
+  top:-100px;
+  z-index:100;
+  background:#ff3f96;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:20px;
+}
+.skip:focus{top:10px}
 
-    .small-text {
-      font-size: 15px;
-      opacity: 0.7;
-      margin-bottom: 15px;
-      letter-spacing: 1px;
-    }
+section{
+  min-height:100svh;
+  min-height:100vh;
+  padding:70px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+}
 
-    h1,
-    h2 {
-      margin-bottom: 20px;
-      text-shadow:
-        0 0 10px rgba(255, 80, 160, 0.7),
-        0 0 30px rgba(255, 50, 150, 0.4);
-    }
+.container{
+  width:min(1000px,100%);
+  margin:auto;
+}
 
-    h1 {
-      font-size: clamp(48px, 10vw, 100px);
-    }
+.kicker{
+  font-size:16px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color:#ff91c8;
+  margin-bottom:18px;
+}
 
-    h2 {
-      font-size: clamp(36px, 8vw, 70px);
-    }
+h1,h2{
+  font-weight:600;
+  line-height:.95;
+  text-shadow:
+    0 0 15px rgba(255,72,158,.7),
+    0 0 50px rgba(255,72,158,.25);
+}
 
-    .description {
-      font-size: 18px;
-      opacity: 0.8;
-      margin-bottom: 30px;
-    }
+h1{
+  font-size:clamp(65px,14vw,145px);
+}
 
-    button {
-      border: 0;
-      border-radius: 999px;
-      padding: 15px 28px;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-      background: linear-gradient(135deg, #ff4f9a, #9c4dff);
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(255, 50, 150, 0.25);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      touch-action: manipulation;
-    }
+h2{
+  font-size:clamp(48px,9vw,90px);
+}
 
-    button:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 15px 35px rgba(255, 50, 150, 0.4);
-    }
+.subtitle{
+  font-size:clamp(19px,3vw,27px);
+  opacity:.85;
+  margin:25px auto 35px;
+  max-width:650px;
+}
 
-    button:focus-visible {
-      outline: 3px solid white;
-      outline-offset: 4px;
-      box-shadow:
-        0 0 0 7px rgba(255, 79, 154, 0.35),
-        0 15px 35px rgba(255, 50, 150, 0.4);
-    }
+.script{
+  font-family:"Dancing Script",cursive;
+  color:#ff9ccc;
+}
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
-      margin-top: 30px;
-    }
+.btn{
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff;
+  background:linear-gradient(135deg,#ff3f91,#a54cff);
+  padding:17px 34px;
+  border-radius:50px;
+  font-family:inherit;
+  font-size:19px;
+  cursor:pointer;
+  box-shadow:
+    0 0 20px rgba(255,53,148,.4),
+    0 12px 40px rgba(0,0,0,.35);
+  transition:.25s ease;
+  touch-action:manipulation;
+}
 
-    #noBtn {
-      background: rgba(255,255,255,0.12);
-      box-shadow: none;
-    }
+.btn:hover{
+  transform:translateY(-4px) scale(1.03);
+  box-shadow:
+    0 0 35px rgba(255,53,148,.7),
+    0 15px 45px rgba(0,0,0,.4);
+}
 
-    #answer {
-      min-height: 30px;
-      margin-top: 25px;
-      font-size: 18px;
-      color: #ff8fc4;
-      font-weight: bold;
-    }
+.btn:focus-visible{
+  outline:3px solid #fff;
+  outline-offset:5px;
+}
 
-    .memories {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin: 40px auto;
-      max-width: 900px;
-    }
+.scroll{
+  position:absolute;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:14px;
+  letter-spacing:3px;
+  opacity:.55;
+}
 
-    .memory {
-      padding: 35px 20px;
-      border-radius: 25px;
-      background:
-        linear-gradient(
-          145deg,
-          rgba(255, 79, 154, 0.18),
-          rgba(156, 77, 255, 0.15)
-        );
-      border: 1px solid rgba(255,255,255,0.12);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: transform 0.25s ease;
-    }
+.scroll span{
+  display:block;
+  margin-top:8px;
+  animation:down 1.5s infinite;
+}
 
-    .memory:hover {
-      transform: translateY(-8px);
-    }
+@keyframes down{
+  50%{transform:translateY(8px)}
+}
 
-    .memory-icon {
-      font-size: 45px;
-      margin-bottom: 15px;
-    }
+/* QUESTION */
 
-    .memory h3 {
-      margin-bottom: 10px;
-      font-size: 21px;
-    }
+.question-box{
+  width:min(750px,100%);
+  padding:55px 25px;
+  border-radius:35px;
+  border:1px solid rgba(255,150,205,.25);
+  background:rgba(25,7,29,.55);
+  box-shadow:
+    0 0 80px rgba(255,37,140,.12),
+    inset 0 0 50px rgba(255,255,255,.025);
+  backdrop-filter:blur(14px);
+}
 
-    .memory p {
-      opacity: 0.7;
-      line-height: 1.5;
-    }
+.heart-symbol{
+  font-size:65px;
+  margin-bottom:20px;
+  animation:heartbeat 1.5s infinite;
+  filter:drop-shadow(0 0 18px #ff3f96);
+}
 
-    .letter {
-      max-width: 700px;
-      padding: 40px 28px;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      line-height: 1.8;
-      font-size: 18px;
-    }
+@keyframes heartbeat{
+  50%{transform:scale(1.12)}
+}
 
-    .letter p {
-      margin-bottom: 20px;
-    }
+.answers{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-top:35px;
+}
 
-    .final-title {
-      margin-bottom: 25px;
-    }
+.no{
+  background:rgba(255,255,255,.1);
+}
 
-    @media (hover: hover) and (pointer: fine) {
-      .memory:hover {
-        transform: translateY(-8px) rotateX(2deg);
-      }
-    }
+#answer{
+  min-height:30px;
+  margin-top:25px;
+  color:#ff9ccc;
+  font-family:"Dancing Script",cursive;
+  font-size:28px;
+}
 
-    @media (max-width: 700px) {
-      .screen {
-        padding: 25px 16px;
-      }
+/* MEMORIES */
 
-      .description {
-        font-size: 16px;
-      }
+.memory-section{
+  align-items:flex-start;
+  padding-top:100px;
+}
 
-      button {
-        padding: 14px 24px;
-      }
+.memory-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  margin:50px auto 40px;
+}
 
-      .memories {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        margin: 25px auto;
-      }
+.card{
+  min-height:300px;
+  padding:25px;
+  border-radius:28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  text-align:left;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,160,210,.3);
+  background:
+    radial-gradient(circle at 70% 25%,rgba(255,88,169,.5),transparent 30%),
+    linear-gradient(145deg,#33133b,#10091d);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  transition:.35s ease;
+}
 
-      .memory {
-        padding: 25px 18px;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: rgba(25, 15, 35, 0.9);
-      }
+.card:nth-child(2){
+  background:
+    radial-gradient(circle at 30% 20%,rgba(164,82,255,.5),transparent 35%),
+    linear-gradient(145deg,#251343,#0d0819);
+}
 
-      .letter {
-        padding: 30px 20px;
-        font-size: 16px;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background: rgba(25, 15, 35, 0.92);
-      }
-    }
+.card:nth-child(3){
+  background:
+    radial-gradient(circle at 70% 30%,rgba(255,132,95,.4),transparent 35%),
+    linear-gradient(145deg,#3c1737,#100817);
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
+.card:hover{
+  transform:translateY(-10px) rotateX(3deg);
+}
 
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-  </style>
+.card-icon{
+  position:absolute;
+  top:22px;
+  right:25px;
+  font-size:55px;
+  color:#ff86be;
+  filter:drop-shadow(0 0 15px #ff3f96);
+}
+
+.card h3{
+  font-size:31px;
+  margin-bottom:8px;
+}
+
+.card p{
+  font-size:18px;
+  opacity:.72;
+}
+
+/* LETTER */
+
+.letter{
+  width:min(760px,100%);
+  padding:50px 35px;
+  border-radius:35px;
+  border:1px solid rgba(255,150,205,.3);
+  background:rgba(22,7,28,.65);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.45),
+    inset 0 0 60px rgba(255,50,150,.04);
+  backdrop-filter:blur(15px);
+}
+
+.letter-line{
+  width:100px;
+  height:1px;
+  background:#ff78b6;
+  margin:20px auto 30px;
+  box-shadow:0 0 15px #ff3f96;
+}
+
+.letter p{
+  font-size:21px;
+  line-height:1.7;
+  opacity:.9;
+  margin-bottom:18px;
+}
+
+.signature{
+  font-family:"Dancing Script",cursive;
+  font-size:34px!important;
+  color:#ff9ccc;
+  margin-top:25px;
+}
+
+/* FINAL */
+
+.final-heart{
+  font-size:100px;
+  filter:drop-shadow(0 0 35px #ff3f96);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.08)}
+}
+
+.footer-text{
+  margin-top:35px;
+  letter-spacing:4px;
+  font-size:13px;
+  opacity:.45;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+  section{
+    padding:55px 16px;
+  }
+
+  .question-box{
+    padding:40px 18px;
+    border-radius:25px;
+    backdrop-filter:none;
+    background:rgba(25,7,29,.88);
+  }
+
+  .memory-grid{
+    grid-template-columns:1fr;
+    gap:16px;
+    margin-top:35px;
+  }
+
+  .card{
+    min-height:230px;
+  }
+
+  .letter{
+    padding:35px 20px;
+    backdrop-filter:none;
+    background:rgba(22,7,28,.9);
+  }
+
+  .letter p{
+    font-size:19px;
+  }
+
+  .btn{
+    padding:15px 27px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+
+  *,
+  *::before,
+  *::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <canvas id="bg" aria-hidden="true"></canvas>
+<a class="skip" href="#main">Skip to content</a>
 
-  <a class="skip-link" href="#main-content">
-    Skip to main content
-  </a>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="particles" id="particles" aria-hidden="true"></div>
 
-  <main id="main-content" tabindex="-1">
+<main id="main" tabindex="-1">
 
-    <!-- HOME -->
-    <section
-      id="home"
-      class="screen"
-      aria-labelledby="home-title"
-    >
-      <div class="content">
+<!-- HERO -->
 
-        <p class="small-text">
-          A little surprise for you
+<section id="home" aria-labelledby="homeTitle">
+
+  <div class="container">
+
+    <div class="kicker">A little surprise for you</div>
+
+    <h1 id="homeTitle">
+      Hey You <span class="script">♥</span>
+    </h1>
+
+    <p class="subtitle">
+      I made a tiny world just for you.
+      <br>
+      <span class="script">Take a moment and come inside...</span>
+    </p>
+
+    <button class="btn" id="enterBtn">
+      Enter My World →
+    </button>
+
+  </div>
+
+  <div class="scroll">
+    JUST SCROLL
+    <span>↓</span>
+  </div>
+
+</section>
+
+
+<!-- QUESTION -->
+
+<section id="question" aria-labelledby="questionTitle">
+
+  <div class="question-box">
+
+    <div class="heart-symbol" aria-hidden="true">♥</div>
+
+    <div class="kicker">Be honest...</div>
+
+    <h2 id="questionTitle">
+      Do you like me?
+    </h2>
+
+    <p class="subtitle">
+      Your answer might change this little story.
+    </p>
+
+    <div class="answers">
+
+      <button class="btn" id="yesBtn">
+        YES ♥
+      </button>
+
+      <button class="btn no" id="noBtn">
+        NO 😶
+      </button>
+
+    </div>
+
+    <p id="answer"
+       role="status"
+       aria-live="polite"
+       aria-atomic="true"></p>
+
+  </div>
+
+</section>
+
+
+<!-- MEMORIES -->
+
+<section id="memories"
+         class="memory-section"
+         aria-labelledby="memoryTitle">
+
+  <div class="container">
+
+    <div class="kicker">Maybe someday...</div>
+
+    <h2 id="memoryTitle">
+      Our Little Story
+    </h2>
+
+    <p class="subtitle">
+      Some moments are already special.
+      <br>
+      And some are still waiting to happen.
+    </p>
+
+    <div class="memory-grid">
+
+      <article class="card">
+
+        <div class="card-icon" aria-hidden="true">
+          ♡
+        </div>
+
+        <h3>Late Night Talks</h3>
+
+        <p>
+          Conversations that never feel boring.
         </p>
 
-        <h1 id="home-title">
-          Hey You ❤️
-        </h1>
+      </article>
 
-        <p class="description">
-          I made something special for you.
+
+      <article class="card">
+
+        <div class="card-icon" aria-hidden="true">
+          ✦
+        </div>
+
+        <h3>Small Moments</h3>
+
+        <p>
+          Little things that somehow mean a lot.
         </p>
 
-        <button
-          id="enterBtn"
-          type="button"
-          aria-label="Enter my world"
-        >
-          Enter My World
-        </button>
-
-      </div>
-    </section>
+      </article>
 
 
-    <!-- QUESTION -->
-    <section
-      id="question"
-      class="screen"
-      aria-labelledby="question-title"
-    >
-      <div class="content">
+      <article class="card">
 
-        <h2 id="question-title">
-          Do you like me?
-        </h2>
-
-        <div class="buttons">
-
-          <button
-            id="yesBtn"
-            type="button"
-            aria-label="Yes, I like you"
-          >
-            YES ❤️
-          </button>
-
-          <button
-            id="noBtn"
-            type="button"
-            aria-label="No"
-          >
-            NO 😶
-          </button>
-
+        <div class="card-icon" aria-hidden="true">
+          ∞
         </div>
 
-        <p
-          id="answer"
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        ></p>
+        <h3>A Beautiful Future</h3>
 
-      </div>
-    </section>
+        <p>
+          So many moments still waiting for us.
+        </p>
 
+      </article>
 
-    <!-- MEMORIES -->
-    <section
-      id="memories"
-      class="screen"
-      aria-labelledby="memories-title"
-    >
-      <div class="content">
+    </div>
 
-        <h2 id="memories-title">
-          Our Little Story
-        </h2>
+    <button class="btn" id="letterBtn">
+      One Last Thing →
+    </button>
 
-        <div class="memories">
+  </div>
 
-          <article class="memory">
-            <div
-              class="memory-icon"
-              aria-hidden="true"
-            >
-              ♡
-            </div>
-
-            <h3>
-              Beautiful Moment
-            </h3>
-
-            <p>
-              A memory waiting to be created.
-            </p>
-          </article>
+</section>
 
 
-          <article class="memory">
-            <div
-              class="memory-icon"
-              aria-hidden="true"
-            >
-              ✦
-            </div>
+<!-- LETTER -->
 
-            <h3>
-              Special Moment
-            </h3>
+<section id="letter" aria-labelledby="letterTitle">
 
-            <p>
-              A little moment worth remembering.
-            </p>
-          </article>
+  <div class="letter">
 
+    <div class="kicker">
+      This one's for you
+    </div>
 
-          <article class="memory">
-            <div
-              class="memory-icon"
-              aria-hidden="true"
-            >
-              ∞
-            </div>
+    <h2 id="letterTitle">
+      For You ♥
+    </h2>
 
-            <h3>
-              Our Story
-            </h3>
+    <div class="letter-line"></div>
 
-            <p>
-              Maybe this is only the beginning.
-            </p>
-          </article>
+    <p>
+      I don't know where this little journey will take us,
+      but I just wanted you to know something...
+    </p>
 
-        </div>
+    <p>
+      You are special.
+      You bring happiness in ways you might not even realize.
+    </p>
 
-        <button
-          id="finalBtn"
-          type="button"
-          aria-label="See one last thing"
-        >
-          One Last Thing
-        </button>
+    <p>
+      Some people enter our lives unexpectedly
+      and somehow make everything feel a little brighter.
+    </p>
 
-      </div>
-    </section>
+    <p>
+      Thank you for being you.
+    </p>
 
+    <p>
+      Maybe this is just the beginning of something beautiful.
+    </p>
 
-    <!-- FINAL -->
-    <section
-      id="final"
-      class="screen"
-      aria-labelledby="final-title"
-    >
-      <div class="content">
+    <p class="signature">
+      I'm really happy you're here ♥
+    </p>
 
-        <div class="letter">
+    <button class="btn" id="finalBtn">
+      Continue →
+    </button>
 
-          <h2
-            id="final-title"
-            class="final-title"
-          >
-            For You ❤️
-          </h2>
+  </div>
 
-          <p>
-            I don't know where this little journey will go,
-            but I wanted you to know that you are special.
-          </p>
-
-          <p>
-            Some people enter our lives unexpectedly
-            and somehow make ordinary moments feel different.
-          </p>
-
-          <p>
-            Maybe this is just the beginning of our story.
-          </p>
-
-          <p>
-            ❤️
-          </p>
-
-        </div>
-
-        <br>
-
-        <button
-          id="replayBtn"
-          type="button"
-          aria-label="Replay the experience"
-        >
-          Replay
-        </button>
-
-      </div>
-    </section>
-
-  </main>
+</section>
 
 
-  <script>
-    /* ==========================================
-       MOBILE PERFORMANCE SETTINGS
-       ========================================== */
+<!-- FINAL -->
 
-    const isMobile =
-      window.matchMedia("(max-width: 700px)").matches ||
-      window.matchMedia("(pointer: coarse)").matches;
+<section id="final" aria-labelledby="finalTitle">
 
-    const reducedMotion =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  <div class="container">
+
+    <div class="final-heart" aria-hidden="true">
+      ♥
+    </div>
+
+    <div class="kicker">
+      And finally...
+    </div>
+
+    <h2 id="finalTitle">
+      You Are Amazing
+    </h2>
+
+    <p class="subtitle">
+      Whatever happens next,
+      <br>
+      I'm glad this little story brought you here.
+    </p>
+
+    <p class="script" style="font-size:32px">
+      Maybe our best chapter hasn't been written yet.
+    </p>
+
+    <br><br>
+
+    <button class="btn" id="replayBtn">
+      ↻ Replay This Moment
+    </button>
+
+    <div class="footer-text">
+      MADE WITH ♥ JUST FOR YOU
+    </div>
+
+  </div>
+
+</section>
+
+</main>
 
 
-    /* ==========================================
-       THREE.JS SETUP
-       ========================================== */
+<script>
 
-    const canvas = document.getElementById("bg");
+/* ==========================================
+   PERFORMANCE
+========================================== */
 
-    const scene = new THREE.Scene();
+const mobile =
+  matchMedia("(max-width:700px)").matches ||
+  matchMedia("(pointer:coarse)").matches;
 
-    const camera = new THREE.PerspectiveCamera(
-      55,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      100
+const reduced =
+  matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+
+/* ==========================================
+   FLOATING PARTICLES
+========================================== */
+
+const particleBox =
+  document.getElementById("particles");
+
+const particleCount =
+  reduced ? 15 :
+  mobile ? 28 :
+  55;
+
+for(let i=0;i<particleCount;i++){
+
+  const p=document.createElement("div");
+
+  p.className="particle";
+
+  p.style.left=Math.random()*100+"%";
+
+  p.style.animationDuration=
+    (7+Math.random()*10)+"s";
+
+  p.style.animationDelay=
+    (-Math.random()*15)+"s";
+
+  p.style.opacity=
+    .25+Math.random()*.55;
+
+  const size=
+    2+Math.random()*4;
+
+  p.style.width=size+"px";
+  p.style.height=size+"px";
+
+  particleBox.appendChild(p);
+}
+
+
+/* ==========================================
+   THREE.JS
+========================================== */
+
+const canvas=
+  document.getElementById("scene");
+
+const scene=
+  new THREE.Scene();
+
+const camera=
+  new THREE.PerspectiveCamera(
+    55,
+    innerWidth/innerHeight,
+    .1,
+    100
+  );
+
+camera.position.z=7;
+
+
+const renderer=
+  new THREE.WebGLRenderer({
+    canvas,
+    alpha:true,
+    antialias:!mobile,
+    powerPreference:mobile
+      ?"low-power"
+      :"default"
+  });
+
+renderer.setPixelRatio(
+  Math.min(
+    devicePixelRatio || 1,
+    mobile ? 1.25 : 1.7
+  )
+);
+
+renderer.setSize(
+  innerWidth,
+  innerHeight,
+  false
+);
+
+
+/* LIGHTS */
+
+scene.add(
+  new THREE.AmbientLight(
+    0xffd6e8,
+    mobile ? 1.3 : .9
+  )
+);
+
+const light=
+  new THREE.PointLight(
+    0xff3f96,
+    4,
+    25
+  );
+
+light.position.set(2,3,5);
+
+scene.add(light);
+
+if(!mobile){
+
+  const light2=
+    new THREE.PointLight(
+      0x8f4dff,
+      2.5,
+      25
     );
 
-    camera.position.z = 7;
+  light2.position.set(-4,-2,3);
+
+  scene.add(light2);
+}
 
 
-    /*
-      Mobile:
-      - No antialiasing
-      - Lower pixel ratio
-      - Fewer particles
+/* HEART */
 
-      Desktop:
-      - Better quality
-    */
+const shape=
+  new THREE.Shape();
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      antialias: !isMobile,
-      alpha: true,
-      powerPreference: isMobile ? "low-power" : "default"
+shape.moveTo(0,.5);
+
+shape.bezierCurveTo(
+  0,.5,
+  -1.5,1.5,
+  -1.8,.15
+);
+
+shape.bezierCurveTo(
+  -2,-1,
+  -.7,-1.7,
+  0,-.65
+);
+
+shape.bezierCurveTo(
+  .7,-1.7,
+  2,-1,
+  1.8,.15
+);
+
+shape.bezierCurveTo(
+  1.5,1.5,
+  0,.5,
+  0,.5
+);
+
+const heartGeometry=
+  new THREE.ExtrudeGeometry(
+    shape,{
+      depth:.5,
+      bevelEnabled:true,
+      bevelSegments:mobile?1:3,
+      steps:1,
+      bevelSize:.1,
+      bevelThickness:.1
+    }
+  );
+
+heartGeometry.center();
+
+const heartMaterial=
+  new THREE.MeshStandardMaterial({
+    color:0xff4f9d,
+    emissive:0x801744,
+    emissiveIntensity:.8,
+    roughness:.3,
+    metalness:.05
+  });
+
+const heart=
+  new THREE.Mesh(
+    heartGeometry,
+    heartMaterial
+  );
+
+heart.scale.set(1.15,1.15,1.15);
+
+scene.add(heart);
+
+
+/* PARTICLES IN 3D */
+
+const count=
+  reduced ? 80 :
+  mobile ? 280 :
+  650;
+
+const positions=
+  new Float32Array(count*3);
+
+for(let i=0;i<count;i++){
+
+  const n=i*3;
+
+  positions[n]=
+    (Math.random()-.5)*28;
+
+  positions[n+1]=
+    (Math.random()-.5)*28;
+
+  positions[n+2]=
+    (Math.random()-.5)*25;
+}
+
+const geometry=
+  new THREE.BufferGeometry();
+
+geometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    positions,3
+  )
+);
+
+const material=
+  new THREE.PointsMaterial({
+    color:0xffb9dc,
+    size:mobile?.055:.04,
+    transparent:true,
+    opacity:.7
+  });
+
+const stars=
+  new THREE.Points(
+    geometry,
+    material
+  );
+
+scene.add(stars);
+
+
+/* ANIMATION */
+
+let last=0;
+
+const fps=
+  reduced ? 12 :
+  mobile ? 30 :
+  60;
+
+const interval=1000/fps;
+
+function animate(time){
+
+  requestAnimationFrame(animate);
+
+  if(document.hidden)return;
+
+  if(time-last<interval)return;
+
+  last=time;
+
+  if(!reduced){
+
+    heart.rotation.y=
+      time*.00045;
+
+    heart.rotation.z=
+      Math.sin(time*.0007)*.08;
+
+    const s=
+      1.15+
+      Math.sin(time*.002)*.045;
+
+    heart.scale.set(s,s,s);
+
+    stars.rotation.y=
+      time*.000018;
+
+    stars.rotation.x=
+      time*.000008;
+
+  }
+
+  renderer.render(scene,camera);
+}
+
+requestAnimationFrame(animate);
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+function go(id){
+
+  const el=
+    document.getElementById(id);
+
+  if(!el)return;
+
+  el.scrollIntoView({
+    behavior:
+      reduced?"auto":"smooth"
+  });
+
+  setTimeout(()=>{
+    el.focus({
+      preventScroll:true
     });
-
-    const maxPixelRatio = isMobile ? 1.25 : 1.75;
-
-    renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio || 1, maxPixelRatio)
-    );
-
-    renderer.setSize(
-      window.innerWidth,
-      window.innerHeight,
-      false
-    );
+  },reduced?0:500);
+}
 
 
-    /* ==========================================
-       LIGHTING
-       ========================================== */
+/* ==========================================
+   YES / NO
+========================================== */
 
-    const ambientLight = new THREE.AmbientLight(
-      0xffffff,
-      isMobile ? 1.1 : 0.8
-    );
+const enter=
+  document.getElementById("enterBtn");
 
-    scene.add(ambientLight);
+const yes=
+  document.getElementById("yesBtn");
+
+const no=
+  document.getElementById("noBtn");
+
+const answer=
+  document.getElementById("answer");
+
+const letter=
+  document.getElementById("letterBtn");
+
+const finalBtn=
+  document.getElementById("finalBtn");
+
+const replay=
+  document.getElementById("replayBtn");
 
 
-    const pointLight = new THREE.PointLight(
-      0xff4f9a,
-      3,
-      20
-    );
-
-    pointLight.position.set(2, 3, 5);
-
-    scene.add(pointLight);
+enter.onclick=()=>{
+  go("question");
+};
 
 
-    if (!isMobile) {
-      const secondLight = new THREE.PointLight(
-        0x9c4dff,
-        2,
-        20
+let noClicks=0;
+
+yes.onclick=()=>{
+
+  answer.textContent=
+    "I knew it... ♥";
+
+  setTimeout(()=>{
+    go("memories");
+  },1000);
+};
+
+
+no.onclick=()=>{
+
+  noClicks++;
+
+  const texts=[
+    "Are you sure? 🥺",
+    "Think again...",
+    "Really? 😭",
+    "Last chance ♥"
+  ];
+
+  if(noClicks<=texts.length){
+
+    no.textContent=
+      texts[noClicks-1];
+
+  }else{
+
+    no.textContent="YES ♥";
+
+    no.classList.remove("no");
+
+    no.onclick=()=>{
+
+      answer.textContent=
+        "I knew it... ♥";
+
+      setTimeout(()=>{
+        go("memories");
+      },1000);
+    };
+  }
+};
+
+
+letter.onclick=()=>{
+  go("letter");
+};
+
+
+finalBtn.onclick=()=>{
+  go("final");
+};
+
+
+replay.onclick=()=>{
+
+  noClicks=0;
+
+  no.textContent="NO 😶";
+
+  no.classList.add("no");
+
+  no.onclick=null;
+
+  answer.textContent="";
+
+  go("home");
+};
+
+
+/* ESCAPE */
+
+document.addEventListener(
+  "keydown",
+  e=>{
+    if(e.key==="Escape"){
+      go("home");
+    }
+  }
+);
+
+
+/* RESIZE */
+
+let resizeTimer;
+
+addEventListener(
+  "resize",
+  ()=>{
+    clearTimeout(resizeTimer);
+
+    resizeTimer=setTimeout(()=>{
+
+      camera.aspect=
+        innerWidth/innerHeight;
+
+      camera.updateProjectionMatrix();
+
+      renderer.setPixelRatio(
+        Math.min(
+          devicePixelRatio||1,
+          mobile?1.25:1.7
+        )
       );
 
-      secondLight.position.set(-3, -2, 4);
-
-      scene.add(secondLight);
-    }
-
-
-    /* ==========================================
-       3D HEART
-       ========================================== */
-
-    const heartShape = new THREE.Shape();
-
-    heartShape.moveTo(0, 0.4);
-
-    heartShape.bezierCurveTo(
-      0, 0.4,
-      -1.5, 1.4,
-      -1.8, 0.1
-    );
-
-    heartShape.bezierCurveTo(
-      -2.1, -1.1,
-      -0.8, -1.8,
-      0, -0.7
-    );
-
-    heartShape.bezierCurveTo(
-      0.8, -1.8,
-      2.1, -1.1,
-      1.8, 0.1
-    );
-
-    heartShape.bezierCurveTo(
-      1.5, 1.4,
-      0, 0.4,
-      0, 0.4
-    );
-
-
-    const heartGeometry =
-      new THREE.ExtrudeGeometry(
-        heartShape,
-        {
-          depth: 0.5,
-          bevelEnabled: true,
-          bevelSegments: isMobile ? 2 : 3,
-          steps: 1,
-          bevelSize: 0.12,
-          bevelThickness: 0.12
-        }
+      renderer.setSize(
+        innerWidth,
+        innerHeight,
+        false
       );
 
-    heartGeometry.center();
-
-
-    const heartMaterial =
-      new THREE.MeshStandardMaterial({
-        color: 0xff4f9a,
-        emissive: 0x7a1748,
-        emissiveIntensity: 0.7,
-        roughness: 0.35,
-        metalness: 0.05
-      });
-
-
-    const heart = new THREE.Mesh(
-      heartGeometry,
-      heartMaterial
-    );
-
-    heart.scale.set(
-      1.15,
-      1.15,
-      1.15
-    );
-
-    scene.add(heart);
-
-
-    /* ==========================================
-       PARTICLES
-       ========================================== */
-
-    let particleCount;
-
-    if (reducedMotion) {
-      particleCount = 150;
-    } else if (isMobile) {
-      particleCount = 500;
-    } else {
-      particleCount = 1000;
-    }
-
-
-    const particlePositions =
-      new Float32Array(
-        particleCount * 3
-      );
-
-
-    for (
-      let i = 0;
-      i < particleCount;
-      i++
-    ) {
-
-      const i3 = i * 3;
-
-      particlePositions[i3] =
-        (Math.random() - 0.5) * 30;
-
-      particlePositions[i3 + 1] =
-        (Math.random() - 0.5) * 30;
-
-      particlePositions[i3 + 2] =
-        (Math.random() - 0.5) * 30;
-    }
-
-
-    const particleGeometry =
-      new THREE.BufferGeometry();
-
-    particleGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(
-        particlePositions,
-        3
-      )
-    );
-
-
-    const particleMaterial =
-      new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: isMobile ? 0.045 : 0.035,
-        transparent: true,
-        opacity: 0.7
-      });
-
-
-    const particles =
-      new THREE.Points(
-        particleGeometry,
-        particleMaterial
-      );
-
-    scene.add(particles);
-
-
-    /* ==========================================
-       ANIMATION
-       ========================================== */
-
-    let lastRender = 0;
-
-    const targetFPS =
-      reducedMotion ? 12 :
-      isMobile ? 30 :
-      60;
-
-    const frameInterval =
-      1000 / targetFPS;
-
-    let animationRunning = true;
-
-
-    function animate(time) {
-
-      requestAnimationFrame(animate);
-
-      if (document.hidden) {
-        return;
-      }
-
-      if (!animationRunning) {
-        return;
-      }
-
-      if (
-        time - lastRender <
-        frameInterval
-      ) {
-        return;
-      }
-
-      lastRender = time;
-
-
-      if (!reducedMotion) {
-
-        heart.rotation.y =
-          time * 0.00045;
-
-        heart.rotation.z =
-          Math.sin(time * 0.0005) * 0.08;
-
-        const scale =
-          1.15 +
-          Math.sin(time * 0.002) * 0.04;
-
-        heart.scale.set(
-          scale,
-          scale,
-          scale
-        );
-
-
-        particles.rotation.y =
-          time * 0.000025;
-
-        particles.rotation.x =
-          time * 0.00001;
-      }
-
-
-      renderer.render(
-        scene,
-        camera
-      );
-    }
-
-
-    requestAnimationFrame(animate);
-
-
-    /* ==========================================
-       NAVIGATION
-       ========================================== */
-
-    function goTo(id) {
-
-      const section =
-        document.getElementById(id);
-
-      if (!section) return;
-
-      section.scrollIntoView({
-        behavior:
-          reducedMotion
-            ? "auto"
-            : "smooth"
-      });
-
-      setTimeout(() => {
-
-        section.focus({
-          preventScroll: true
-        });
-
-      }, reducedMotion ? 0 : 500);
-    }
-
-
-    /* ==========================================
-       BUTTONS
-       ========================================== */
-
-    const enterBtn =
-      document.getElementById("enterBtn");
-
-    const yesBtn =
-      document.getElementById("yesBtn");
-
-    const noBtn =
-      document.getElementById("noBtn");
-
-    const finalBtn =
-      document.getElementById("finalBtn");
-
-    const replayBtn =
-      document.getElementById("replayBtn");
-
-    const answer =
-      document.getElementById("answer");
-
-
-    enterBtn.addEventListener(
-      "click",
-      () => {
-        goTo("question");
-      }
-    );
-
-
-    let noCount = 0;
-
-
-    function yesAnswer() {
-
-      answer.textContent =
-        "I knew it ❤️";
-
-      setTimeout(() => {
-        goTo("memories");
-      }, 1200);
-    }
-
-
-    yesBtn.addEventListener(
-      "click",
-      yesAnswer
-    );
-
-
-    noBtn.addEventListener(
-      "click",
-      () => {
-
-        noCount++;
-
-        const messages = [
-          "Are you sure? 🥺",
-          "Think again...",
-          "Really? 😭",
-          "Last chance ❤️"
-        ];
-
-        if (noCount <= messages.length) {
-
-          noBtn.textContent =
-            messages[noCount - 1];
-
-        } else {
-
-          noBtn.textContent =
-            "YES ❤️";
-
-          noBtn.setAttribute(
-            "aria-label",
-            "Yes, I like you"
-          );
-
-          noBtn.style.background =
-            "linear-gradient(135deg,#ff4f9a,#9c4dff)";
-
-          noBtn.onclick =
-            yesAnswer;
-        }
-      }
-    );
-
-
-    finalBtn.addEventListener(
-      "click",
-      () => {
-        goTo("final");
-      }
-    );
-
-
-    replayBtn.addEventListener(
-      "click",
-      () => {
-
-        noCount = 0;
-
-        noBtn.textContent =
-          "NO 😶";
-
-        noBtn.setAttribute(
-          "aria-label",
-          "No"
-        );
-
-        noBtn.style.background =
-          "rgba(255,255,255,0.12)";
-
-        noBtn.onclick = null;
-
-        answer.textContent = "";
-
-        goTo("home");
-      }
-    );
-
-
-    /* ==========================================
-       ESCAPE KEY
-       ========================================== */
-
-    document.addEventListener(
-      "keydown",
-      event => {
-
-        if (event.key === "Escape") {
-          goTo("home");
-        }
-
-      }
-    );
-
-
-    /* ==========================================
-       RESIZE
-       ========================================== */
-
-    let resizeTimer;
-
-    window.addEventListener(
-      "resize",
-      () => {
-
-        clearTimeout(resizeTimer);
-
-        resizeTimer =
-          setTimeout(() => {
-
-            camera.aspect =
-              window.innerWidth /
-              window.innerHeight;
-
-            camera.updateProjectionMatrix();
-
-            renderer.setPixelRatio(
-              Math.min(
-                window.devicePixelRatio || 1,
-                isMobile ? 1.25 : 1.75
-              )
-            );
-
-            renderer.setSize(
-              window.innerWidth,
-              window.innerHeight,
-              false
-            );
-
-          }, 100);
-
-      },
-      { passive: true }
-    );
-
-
-    /* ==========================================
-       PAGE VISIBILITY
-       ========================================== */
-
-    document.addEventListener(
-      "visibilitychange",
-      () => {
-
-        animationRunning =
-          !document.hidden;
-
-      }
-    );
-
-  </script>
+    },120);
+  },
+  {passive:true}
+);
+
+</script>
 
 </body>
-</html>
+  </html>
