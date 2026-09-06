@@ -1,1 +1,1030 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>For You ❤️</title>
+  <meta name="description" content="A little interactive surprise made just for you.">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #080612;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: -100px;
+      left: 10px;
+      z-index: 100;
+      padding: 12px 18px;
+      background: #ff4f9a;
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+
+    .skip-link:focus {
+      top: 10px;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .content {
+      width: min(900px, 100%);
+    }
+
+    .small-text {
+      font-size: 15px;
+      opacity: 0.7;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+    }
+
+    h1,
+    h2 {
+      margin-bottom: 20px;
+      text-shadow:
+        0 0 10px rgba(255, 80, 160, 0.7),
+        0 0 30px rgba(255, 50, 150, 0.4);
+    }
+
+    h1 {
+      font-size: clamp(48px, 10vw, 100px);
+    }
+
+    h2 {
+      font-size: clamp(36px, 8vw, 70px);
+    }
+
+    .description {
+      font-size: 18px;
+      opacity: 0.8;
+      margin-bottom: 30px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 15px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: linear-gradient(135deg, #ff4f9a, #9c4dff);
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255, 50, 150, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    button:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(255, 50, 150, 0.4);
+    }
+
+    button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 4px;
+      box-shadow:
+        0 0 0 7px rgba(255, 79, 154, 0.35),
+        0 15px 35px rgba(255, 50, 150, 0.4);
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    #noBtn {
+      background: rgba(255,255,255,0.12);
+      box-shadow: none;
+    }
+
+    #answer {
+      min-height: 30px;
+      margin-top: 25px;
+      font-size: 18px;
+      color: #ff8fc4;
+      font-weight: bold;
+    }
+
+    .memories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 40px auto;
+      max-width: 900px;
+    }
+
+    .memory {
+      padding: 35px 20px;
+      border-radius: 25px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 79, 154, 0.18),
+          rgba(156, 77, 255, 0.15)
+        );
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 0.25s ease;
+    }
+
+    .memory:hover {
+      transform: translateY(-8px);
+    }
+
+    .memory-icon {
+      font-size: 45px;
+      margin-bottom: 15px;
+    }
+
+    .memory h3 {
+      margin-bottom: 10px;
+      font-size: 21px;
+    }
+
+    .memory p {
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+
+    .letter {
+      max-width: 700px;
+      padding: 40px 28px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      line-height: 1.8;
+      font-size: 18px;
+    }
+
+    .letter p {
+      margin-bottom: 20px;
+    }
+
+    .final-title {
+      margin-bottom: 25px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .memory:hover {
+        transform: translateY(-8px) rotateX(2deg);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .screen {
+        padding: 25px 16px;
+      }
+
+      .description {
+        font-size: 16px;
+      }
+
+      button {
+        padding: 14px 24px;
+      }
+
+      .memories {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin: 25px auto;
+      }
+
+      .memory {
+        padding: 25px 18px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(25, 15, 35, 0.9);
+      }
+
+      .letter {
+        padding: 30px 20px;
+        font-size: 16px;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(25, 15, 35, 0.92);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <a class="skip-link" href="#main-content">
+    Skip to main content
+  </a>
+
+  <main id="main-content" tabindex="-1">
+
+    <!-- HOME -->
+    <section
+      id="home"
+      class="screen"
+      aria-labelledby="home-title"
+    >
+      <div class="content">
+
+        <p class="small-text">
+          A little surprise for you
+        </p>
+
+        <h1 id="home-title">
+          Hey You ❤️
+        </h1>
+
+        <p class="description">
+          I made something special for you.
+        </p>
+
+        <button
+          id="enterBtn"
+          type="button"
+          aria-label="Enter my world"
+        >
+          Enter My World
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- QUESTION -->
+    <section
+      id="question"
+      class="screen"
+      aria-labelledby="question-title"
+    >
+      <div class="content">
+
+        <h2 id="question-title">
+          Do you like me?
+        </h2>
+
+        <div class="buttons">
+
+          <button
+            id="yesBtn"
+            type="button"
+            aria-label="Yes, I like you"
+          >
+            YES ❤️
+          </button>
+
+          <button
+            id="noBtn"
+            type="button"
+            aria-label="No"
+          >
+            NO 😶
+          </button>
+
+        </div>
+
+        <p
+          id="answer"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        ></p>
+
+      </div>
+    </section>
+
+
+    <!-- MEMORIES -->
+    <section
+      id="memories"
+      class="screen"
+      aria-labelledby="memories-title"
+    >
+      <div class="content">
+
+        <h2 id="memories-title">
+          Our Little Story
+        </h2>
+
+        <div class="memories">
+
+          <article class="memory">
+            <div
+              class="memory-icon"
+              aria-hidden="true"
+            >
+              ♡
+            </div>
+
+            <h3>
+              Beautiful Moment
+            </h3>
+
+            <p>
+              A memory waiting to be created.
+            </p>
+          </article>
+
+
+          <article class="memory">
+            <div
+              class="memory-icon"
+              aria-hidden="true"
+            >
+              ✦
+            </div>
+
+            <h3>
+              Special Moment
+            </h3>
+
+            <p>
+              A little moment worth remembering.
+            </p>
+          </article>
+
+
+          <article class="memory">
+            <div
+              class="memory-icon"
+              aria-hidden="true"
+            >
+              ∞
+            </div>
+
+            <h3>
+              Our Story
+            </h3>
+
+            <p>
+              Maybe this is only the beginning.
+            </p>
+          </article>
+
+        </div>
+
+        <button
+          id="finalBtn"
+          type="button"
+          aria-label="See one last thing"
+        >
+          One Last Thing
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- FINAL -->
+    <section
+      id="final"
+      class="screen"
+      aria-labelledby="final-title"
+    >
+      <div class="content">
+
+        <div class="letter">
+
+          <h2
+            id="final-title"
+            class="final-title"
+          >
+            For You ❤️
+          </h2>
+
+          <p>
+            I don't know where this little journey will go,
+            but I wanted you to know that you are special.
+          </p>
+
+          <p>
+            Some people enter our lives unexpectedly
+            and somehow make ordinary moments feel different.
+          </p>
+
+          <p>
+            Maybe this is just the beginning of our story.
+          </p>
+
+          <p>
+            ❤️
+          </p>
+
+        </div>
+
+        <br>
+
+        <button
+          id="replayBtn"
+          type="button"
+          aria-label="Replay the experience"
+        >
+          Replay
+        </button>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <script>
+    /* ==========================================
+       MOBILE PERFORMANCE SETTINGS
+       ========================================== */
+
+    const isMobile =
+      window.matchMedia("(max-width: 700px)").matches ||
+      window.matchMedia("(pointer: coarse)").matches;
+
+    const reducedMotion =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+
+    /* ==========================================
+       THREE.JS SETUP
+       ========================================== */
+
+    const canvas = document.getElementById("bg");
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(
+      55,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      100
+    );
+
+    camera.position.z = 7;
+
+
+    /*
+      Mobile:
+      - No antialiasing
+      - Lower pixel ratio
+      - Fewer particles
+
+      Desktop:
+      - Better quality
+    */
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: !isMobile,
+      alpha: true,
+      powerPreference: isMobile ? "low-power" : "default"
+    });
+
+    const maxPixelRatio = isMobile ? 1.25 : 1.75;
+
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, maxPixelRatio)
+    );
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight,
+      false
+    );
+
+
+    /* ==========================================
+       LIGHTING
+       ========================================== */
+
+    const ambientLight = new THREE.AmbientLight(
+      0xffffff,
+      isMobile ? 1.1 : 0.8
+    );
+
+    scene.add(ambientLight);
+
+
+    const pointLight = new THREE.PointLight(
+      0xff4f9a,
+      3,
+      20
+    );
+
+    pointLight.position.set(2, 3, 5);
+
+    scene.add(pointLight);
+
+
+    if (!isMobile) {
+      const secondLight = new THREE.PointLight(
+        0x9c4dff,
+        2,
+        20
+      );
+
+      secondLight.position.set(-3, -2, 4);
+
+      scene.add(secondLight);
+    }
+
+
+    /* ==========================================
+       3D HEART
+       ========================================== */
+
+    const heartShape = new THREE.Shape();
+
+    heartShape.moveTo(0, 0.4);
+
+    heartShape.bezierCurveTo(
+      0, 0.4,
+      -1.5, 1.4,
+      -1.8, 0.1
+    );
+
+    heartShape.bezierCurveTo(
+      -2.1, -1.1,
+      -0.8, -1.8,
+      0, -0.7
+    );
+
+    heartShape.bezierCurveTo(
+      0.8, -1.8,
+      2.1, -1.1,
+      1.8, 0.1
+    );
+
+    heartShape.bezierCurveTo(
+      1.5, 1.4,
+      0, 0.4,
+      0, 0.4
+    );
+
+
+    const heartGeometry =
+      new THREE.ExtrudeGeometry(
+        heartShape,
+        {
+          depth: 0.5,
+          bevelEnabled: true,
+          bevelSegments: isMobile ? 2 : 3,
+          steps: 1,
+          bevelSize: 0.12,
+          bevelThickness: 0.12
+        }
+      );
+
+    heartGeometry.center();
+
+
+    const heartMaterial =
+      new THREE.MeshStandardMaterial({
+        color: 0xff4f9a,
+        emissive: 0x7a1748,
+        emissiveIntensity: 0.7,
+        roughness: 0.35,
+        metalness: 0.05
+      });
+
+
+    const heart = new THREE.Mesh(
+      heartGeometry,
+      heartMaterial
+    );
+
+    heart.scale.set(
+      1.15,
+      1.15,
+      1.15
+    );
+
+    scene.add(heart);
+
+
+    /* ==========================================
+       PARTICLES
+       ========================================== */
+
+    let particleCount;
+
+    if (reducedMotion) {
+      particleCount = 150;
+    } else if (isMobile) {
+      particleCount = 500;
+    } else {
+      particleCount = 1000;
+    }
+
+
+    const particlePositions =
+      new Float32Array(
+        particleCount * 3
+      );
+
+
+    for (
+      let i = 0;
+      i < particleCount;
+      i++
+    ) {
+
+      const i3 = i * 3;
+
+      particlePositions[i3] =
+        (Math.random() - 0.5) * 30;
+
+      particlePositions[i3 + 1] =
+        (Math.random() - 0.5) * 30;
+
+      particlePositions[i3 + 2] =
+        (Math.random() - 0.5) * 30;
+    }
+
+
+    const particleGeometry =
+      new THREE.BufferGeometry();
+
+    particleGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(
+        particlePositions,
+        3
+      )
+    );
+
+
+    const particleMaterial =
+      new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: isMobile ? 0.045 : 0.035,
+        transparent: true,
+        opacity: 0.7
+      });
+
+
+    const particles =
+      new THREE.Points(
+        particleGeometry,
+        particleMaterial
+      );
+
+    scene.add(particles);
+
+
+    /* ==========================================
+       ANIMATION
+       ========================================== */
+
+    let lastRender = 0;
+
+    const targetFPS =
+      reducedMotion ? 12 :
+      isMobile ? 30 :
+      60;
+
+    const frameInterval =
+      1000 / targetFPS;
+
+    let animationRunning = true;
+
+
+    function animate(time) {
+
+      requestAnimationFrame(animate);
+
+      if (document.hidden) {
+        return;
+      }
+
+      if (!animationRunning) {
+        return;
+      }
+
+      if (
+        time - lastRender <
+        frameInterval
+      ) {
+        return;
+      }
+
+      lastRender = time;
+
+
+      if (!reducedMotion) {
+
+        heart.rotation.y =
+          time * 0.00045;
+
+        heart.rotation.z =
+          Math.sin(time * 0.0005) * 0.08;
+
+        const scale =
+          1.15 +
+          Math.sin(time * 0.002) * 0.04;
+
+        heart.scale.set(
+          scale,
+          scale,
+          scale
+        );
+
+
+        particles.rotation.y =
+          time * 0.000025;
+
+        particles.rotation.x =
+          time * 0.00001;
+      }
+
+
+      renderer.render(
+        scene,
+        camera
+      );
+    }
+
+
+    requestAnimationFrame(animate);
+
+
+    /* ==========================================
+       NAVIGATION
+       ========================================== */
+
+    function goTo(id) {
+
+      const section =
+        document.getElementById(id);
+
+      if (!section) return;
+
+      section.scrollIntoView({
+        behavior:
+          reducedMotion
+            ? "auto"
+            : "smooth"
+      });
+
+      setTimeout(() => {
+
+        section.focus({
+          preventScroll: true
+        });
+
+      }, reducedMotion ? 0 : 500);
+    }
+
+
+    /* ==========================================
+       BUTTONS
+       ========================================== */
+
+    const enterBtn =
+      document.getElementById("enterBtn");
+
+    const yesBtn =
+      document.getElementById("yesBtn");
+
+    const noBtn =
+      document.getElementById("noBtn");
+
+    const finalBtn =
+      document.getElementById("finalBtn");
+
+    const replayBtn =
+      document.getElementById("replayBtn");
+
+    const answer =
+      document.getElementById("answer");
+
+
+    enterBtn.addEventListener(
+      "click",
+      () => {
+        goTo("question");
+      }
+    );
+
+
+    let noCount = 0;
+
+
+    function yesAnswer() {
+
+      answer.textContent =
+        "I knew it ❤️";
+
+      setTimeout(() => {
+        goTo("memories");
+      }, 1200);
+    }
+
+
+    yesBtn.addEventListener(
+      "click",
+      yesAnswer
+    );
+
+
+    noBtn.addEventListener(
+      "click",
+      () => {
+
+        noCount++;
+
+        const messages = [
+          "Are you sure? 🥺",
+          "Think again...",
+          "Really? 😭",
+          "Last chance ❤️"
+        ];
+
+        if (noCount <= messages.length) {
+
+          noBtn.textContent =
+            messages[noCount - 1];
+
+        } else {
+
+          noBtn.textContent =
+            "YES ❤️";
+
+          noBtn.setAttribute(
+            "aria-label",
+            "Yes, I like you"
+          );
+
+          noBtn.style.background =
+            "linear-gradient(135deg,#ff4f9a,#9c4dff)";
+
+          noBtn.onclick =
+            yesAnswer;
+        }
+      }
+    );
+
+
+    finalBtn.addEventListener(
+      "click",
+      () => {
+        goTo("final");
+      }
+    );
+
+
+    replayBtn.addEventListener(
+      "click",
+      () => {
+
+        noCount = 0;
+
+        noBtn.textContent =
+          "NO 😶";
+
+        noBtn.setAttribute(
+          "aria-label",
+          "No"
+        );
+
+        noBtn.style.background =
+          "rgba(255,255,255,0.12)";
+
+        noBtn.onclick = null;
+
+        answer.textContent = "";
+
+        goTo("home");
+      }
+    );
+
+
+    /* ==========================================
+       ESCAPE KEY
+       ========================================== */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (event.key === "Escape") {
+          goTo("home");
+        }
+
+      }
+    );
+
+
+    /* ==========================================
+       RESIZE
+       ========================================== */
+
+    let resizeTimer;
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+        clearTimeout(resizeTimer);
+
+        resizeTimer =
+          setTimeout(() => {
+
+            camera.aspect =
+              window.innerWidth /
+              window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setPixelRatio(
+              Math.min(
+                window.devicePixelRatio || 1,
+                isMobile ? 1.25 : 1.75
+              )
+            );
+
+            renderer.setSize(
+              window.innerWidth,
+              window.innerHeight,
+              false
+            );
+
+          }, 100);
+
+      },
+      { passive: true }
+    );
+
+
+    /* ==========================================
+       PAGE VISIBILITY
+       ========================================== */
+
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+
+        animationRunning =
+          !document.hidden;
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
